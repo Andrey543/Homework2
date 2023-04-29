@@ -1,171 +1,83 @@
-import java.util.NoSuchElementException;
-
 public class LinkedList {
-
     private Node head;
     private int size;
+
+    private class Node {
+        Object data;
+        Node next;
+
+        Node(Object data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
 
     public LinkedList() {
         head = null;
         size = 0;
     }
 
-
-    public void addFirst(int value) {
-        head = new Node(value, head);
-        size++;
-    }
-
-
-    public void addLast(int value) {
-        Node newNode = new Node(value, null);
-
+    public void add(Object data) {
+        Node newNode = new Node(data);
         if (head == null) {
             head = newNode;
         } else {
             Node current = head;
-
-            while (current.getNext() != null) {
-                current = current.getNext();
+            while (current.next != null) {
+                current = current.next;
             }
-
-            current.setNext(newNode);
+            current.next = newNode;
         }
-
         size++;
     }
 
-
-    public void add(int value, int index) {
+    public void insert(Object data, int index) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+            throw new IndexOutOfBoundsException();
         }
-
+        Node newNode = new Node(data);
         if (index == 0) {
-            addFirst(value);
-        } else if (index == size) {
-            addLast(value);
+            newNode.next = head;
+            head = newNode;
         } else {
             Node current = head;
-
-            for (int i = 1; i < index; i++) {
-                current = current.getNext();
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next;
             }
-
-            Node newNode = new Node(value, current.getNext());
-            current.setNext(newNode);
-            size++;
+            newNode.next = current.next;
+            current.next = newNode;
         }
+        size++;
     }
 
-    // удаление первого элемента из списка
-    public void removeFirst() {
-        if (head == null) {
-            throw new NoSuchElementException();
-        }
-
-        head = head.getNext();
-        size--;
-    }
-
-    // удаление последнего элемента из списка
-    public void removeLast() {
-        if (head == null) {
-            throw new NoSuchElementException();
-        }
-
-        if (head.getNext() == null) {
-            head = null;
-        } else {
-            Node current = head;
-
-            while (current.getNext().getNext() != null) {
-                current = current.getNext();
-            }
-
-            current.setNext(null);
-        }
-
-        size--;
-    }
-
-    // удаление элемента по указанному индексу
     public void remove(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+            throw new IndexOutOfBoundsException();
         }
-
         if (index == 0) {
-            removeFirst();
-        } else if (index == size - 1) {
-            removeLast();
+            head = head.next;
         } else {
             Node current = head;
-
-            for (int i = 1; i < index; i++) {
-                current = current.getNext();
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next;
             }
-
-            current.setNext(current.getNext().getNext());
-            size--;
+            current.next = current.next.next;
         }
+        size--;
     }
 
-    // получение элемента по указанному индексу
-    public int get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
-        Node current = head;
-
-        for (int i = 0; i < index; i++) {
-            current = current.getNext();
-        }
-
-        return current.getValue();
-    }
-
-    // размер списка
     public int size() {
         return size;
     }
 
-    // вывод всего списка на экран
-    public void printList() {
+    public Object get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
         Node current = head;
-
-        while (current != null) {
-            System.out.print(current.getValue() + " ");
-            current = current.getNext();
+        for (int i = 0; i < index; i++) {
+            current = current.next;
         }
-
-        System.out.println();
-    }
-
-    private static class Node {
-        private int value;
-        private Node next;
-
-        public Node(int value, Node next) {
-            this.value = value;
-            this.next = next;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public void setValue(int value) {
-            this.value = value;
-        }
-
-        public Node getNext() {
-            return next;
-        }
-
-        public void setNext(Node next) {
-            this.next = next;
-        }
+        return current.data;
     }
 }
